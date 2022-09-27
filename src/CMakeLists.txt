@@ -1,5 +1,5 @@
 project(src)
-
+set(BUILD_SHARED_LIBS OFF)
 set(CMAKE_BUILD_TYPE RelWithDebugInfo)
 #set(CMAKE_BUILD_TYPE Debug)
 

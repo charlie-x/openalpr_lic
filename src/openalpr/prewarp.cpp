@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-
+#include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
 #include "prewarp.h"
@@ -139,6 +139,10 @@ namespace alpr
   }
   
   cv::Mat PreWarp::warpImage(Mat image) {
+	if (this == nullptr) {
+		return image;
+	}
+
     if (!this->valid)
     {
       if (this->config->debugPrewarp)

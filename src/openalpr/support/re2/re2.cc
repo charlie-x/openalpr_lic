@@ -10,7 +10,7 @@
 #include "re2.h"
 
 #include <string>
-#ifndef WIN32
+#ifndef WINDOWS
 #include <pthread.h>
 #endif
 #include <errno.h>

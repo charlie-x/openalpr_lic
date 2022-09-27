@@ -22,6 +22,8 @@
 #include <iostream>
 #include <iterator>
 #include <algorithm>
+#include <vector>
+#include <string>
 
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
@@ -253,7 +255,7 @@ int main( int argc, const char** argv )
 
         cv::VideoCapture cap = cv::VideoCapture();
         cap.open(filename);
-        cap.set(CV_CAP_PROP_POS_MSEC, seektoms);
+        cap.set(cv::CAP_PROP_POS_MSEC, seektoms);
 
         while (cap.read(frame))
         {
@@ -348,19 +350,36 @@ bool detectandshow( Alpr* alpr, cv::Mat frame, std::string region, bool writeJso
 	  if (rectan.width>0) regionsOfInterest.push_back(AlprRegionOfInterest(rectan.x, rectan.y, rectan.width, rectan.height));
   }
   else regionsOfInterest.push_back(AlprRegionOfInterest(0, 0, frame.cols, frame.rows));
-  AlprResults results;
-  if (regionsOfInterest.size()>0) results = alpr->recognize(frame.data, frame.elemSize(), frame.cols, frame.rows, regionsOfInterest);
+  
+  alpr::AlprResults results;
 
+  if (regionsOfInterest.size()>0) results = alpr->recognize(frame.data, frame.elemSize(), frame.cols, frame.rows, regionsOfInterest);
+  
   timespec endTime;
   getTimeMonotonic(&endTime);
   double totalProcessingTime = diffclock(startTime, endTime);
   if (measureProcessingTime)
     std::cout << "Total Time to process image: " << totalProcessingTime << "ms." << std::endl;
   
-  
+
   if (writeJson)
   {
-    std::cout << alpr->toJson( results ) << std::endl;
+	 static std::vector< std::string > known;
+
+	  if (results.plates.size()) {
+		  if (results.plates[0].bestPlate.overall_confidence > 90.0f ) {
+
+			 //std::cout << "looking for " << results.plates[0].bestPlate.characters << std::endl;
+
+			  std::vector< std::string >::iterator i = std::find(known.begin(), known.end(), results.plates[0].bestPlate.characters );
+			  if (i == known.end()) {
+				  std::cout << "New plate who dis " << results.plates[0].bestPlate.characters << std::endl;
+				  known.push_back(results.plates[0].bestPlate.characters);
+
+				  std::cout << alpr->toJson(results) << std::endl;
+			  }
+		  }
+	  }
   }
   else
   {
@@ -393,8 +412,6 @@ std::vector<AlprResult> results = alpr->recognize(buffer);
 
   if (results.size() > 0)
     cv::imwrite("/path/to/output/img.jpg", frame);
-
-
   return results.plates.size() > 0;
 }
 

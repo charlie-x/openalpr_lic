@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <opencv2/core/core.hpp>
+#include <opencv2/opencv.hpp>
 #include <functional>
 #include <cctype>
 
@@ -25,6 +25,9 @@
 
 using namespace cv;
 using namespace std;
+
+#undef min
+#undef max
 
 namespace alpr
 {
@@ -39,7 +42,6 @@ namespace alpr
     expandedRegion.width =  expandedRegion.width + expandXPixels;
     expandedRegion.y = expandedRegion.y - halfY;
     expandedRegion.height =  expandedRegion.height + expandYPixels;
-
 	expandedRegion.x = std::min(std::max(expandedRegion.x, 0), maxX);
 	expandedRegion.y = std::min(std::max(expandedRegion.y, 0), maxY);
 	if (expandedRegion.x + expandedRegion.width > maxX)
@@ -84,10 +86,10 @@ namespace alpr
 
     cout << " Adding label " << label << endl;
     if (input.type() == CV_8U)
-      cvtColor(newImage, newImage, CV_GRAY2BGR);
+      cvtColor(newImage, newImage, COLOR_GRAY2BGR);
 
-    rectangle(newImage, Point(0,0), Point(input.cols, extraHeight), bg, CV_FILLED);
-    putText(newImage, label, Point(5, extraHeight - 5), CV_FONT_HERSHEY_PLAIN  , 0.7, fg);
+    rectangle(newImage, Point(0,0), Point(input.cols, extraHeight), bg, FILLED);
+    putText(newImage, label, Point(5, extraHeight - 5), FONT_HERSHEY_PLAIN  , 0.7, fg);
 
     rectangle(newImage, Point(0,0), Point(newImage.cols - 1, newImage.rows -1), border_color, border_size);
 
@@ -565,7 +567,7 @@ int levenshteinDistance (const std::string &s1, const std::string &s2, int max)
     drawContours(innerArea, contours,
                  contourIndex, // draw this contour
                  cv::Scalar(255,255,255), // in
-                 CV_FILLED,
+                 FILLED,
                  8,
                  hierarchy,
                  2
