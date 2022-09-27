@@ -162,7 +162,7 @@ int main( int argc, const char** argv )
       vector<vector<Point> > contours;
 
       //imshow("copy", charImgCopy);
-      findContours(charImgCopy, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+      findContours(charImgCopy, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
 
       float minHeightPercent = 0.35;
       int minHeight = (int) (((float) characterImg.rows) * minHeightPercent);

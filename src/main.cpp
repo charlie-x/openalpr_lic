@@ -408,10 +408,7 @@ bool detectandshow( Alpr* alpr, cv::Mat frame, std::string region, bool writeJso
     }
   }
 
-std::vector<AlprResult> results = alpr->recognize(buffer);
 
-  if (results.size() > 0)
-    cv::imwrite("/path/to/output/img.jpg", frame);
   return results.plates.size() > 0;
 }
 
